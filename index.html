@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub — Онлайн-тестирование</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo-link" id="logo">
+            <img src="images/logo.png" alt="QuizHub" class="logo-img">
+        </a>
+        <nav class="nav">
+            <a href="index.html" class="active">Главная</a>
+            <a href="profile.html">Профиль</a>
+            <a href="login.html" id="authLink">Войти</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero-section" id="heroBanner">
+            <div class="hero-content">
+                <h1 id="greetingText">Добро пожаловать в QuizHub!</h1>
+                <p>Проверяйте свои знания, проходите тесты и следите за прогрессом.</p>
+                <a href="#quiz-list" class="btn btn-hero">Выбрать тест</a>
+            </div>
+            <div class="hero-image">
+                <!-- Замените путь, если картинка лежит в другой папке -->
+                <img src="images/logo_white.png" alt="QuizHub">
+            </div>
+        </section>
+
+        <section class="about-platform">
+            <h2>Что дает QuizHub участникам?</h2>
+            <p class="subtitle" style="text-align: center; max-width: 800px; margin: 0 auto 40px;">
+                Наш сервис создан для того, чтобы сделать проверку знаний удобной, быстрой и прозрачной. 
+                Вот какие возможности открываются перед вами после регистрации:
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/analytics.png" alt="Статистика">
+                    </div>
+                    <h3>Личная статистика</h3>
+                    <p>Отслеживайте свой прогресс в личном кабинете. Смотрите историю всех попыток, свои баллы и даты прохождения тестов.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/security.png" alt="Объективность">
+                    </div>
+                    <h3>Честная оценка</h3>
+                    <p>Автоматическая проверка ответов исключает человеческий фактор. Вы сразу видите, где ошиблись, и читаете пояснения к вопросам.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/settings.png" alt="Удобство">
+                    </div>
+                    <h3>Удобный формат</h3>
+                    <p>Проходите тесты в любое время с любого устройства. Следите за таймером и выбирайте удобный темп без спешки и лишнего стресса.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <h2>Как это работает?</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-icon">1</div>
+                    <h3>Выберите тест</h3>
+                    <p>Ознакомьтесь с доступными категориями и выберите интересующий вас тест.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon">2</div>
+                    <h3>Пройдите испытание</h3>
+                    <p>Отвечайте на вопросы на время. Следите за таймером!</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon">3</div>
+                    <h3>Получите результат</h3>
+                    <p>Узнайте свой балл, посмотрите правильные ответы и отслеживайте прогресс.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz-list">
+            <h2>Доступные тесты</h2>
+            <p class="subtitle">Выберите тест и проверьте свои знания</p>
+            <div id="quizList" class="quiz-grid">
+                <p class="loading">Загрузка тестов...</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 QuizHub. Курсовой проект.</p>
+    </footer>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

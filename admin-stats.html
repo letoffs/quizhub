@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub — Статистика</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo-link">
+            <img src="images/logo.png" alt="QuizHub" class="logo-img">
+        </a>
+        <nav class="nav">
+            <a href="index.html">На главную</a>
+            <a href="admin.html">Управление тестами</a>
+            <a href="admin-stats.html" class="active">Статистика</a>
+            <a href="admin-users.html">Пользователи</a>
+            <a href="#" id="authLink">Выйти</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Статистика системы</h1>
+        <p class="subtitle">Общие показатели работы веб-приложения</p>
+
+        <!-- Карточки со статистикой -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="totalUsers">0</div>
+                <div class="stat-label">Пользователей</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-value" id="totalQuizzes">0</div>
+                <div class="stat-label">Тестов создано</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="totalAttempts">0</div>
+                <div class="stat-label">Попыток пройдено</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="avgScore">0%</div>
+                <div class="stat-label">Средний балл</div>
+            </div>
+        </div>
+
+        <!-- Таблица последних попыток -->
+        <h2 style="margin-top: 40px; margin-bottom: 20px;">Последние прохождения</h2>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Пользователь</th>
+                        <th>Тест</th>
+                        <th>Балл</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody id="recentAttemptsTable">
+                    <tr><td colspan="4">Загрузка...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/admin-stats.js"></script>
+</body>
+</html>

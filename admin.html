@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub — Админ-панель</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo-link">
+            <img src="images/logo.png" alt="QuizHub" class="logo-img">
+        </a>
+        <nav class="nav">
+            <a href="index.html">На главную</a>
+            <a href="admin.html" class="active">Управление тестами</a>
+            <a href="admin-stats.html">Статистика</a>
+            <a href="admin-users.html">Пользователи</a>
+            <a href="#" id="authLink">Выйти</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        
+        <div id="quizListView">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1>Управление тестами</h1>
+                <button class="btn" id="showCreateFormBtn">+ Создать новый тест</button>
+            </div>
+
+            <div class="admin-form-container" style="margin-bottom: 40px;">
+                <h2 style="color: #2980b9; margin-bottom: 15px;">Категории тестов</h2>
+                
+                <form id="categoryForm" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="hidden" id="editCategoryId" value="">
+                    <input type="text" id="categoryName" placeholder="Название новой категории" required style="flex: 1; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px;">
+                    <button type="submit" class="btn" id="saveCategoryBtn">Добавить</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;">Отмена</button>
+                </form>
+
+                <table class="admin-table" style="box-shadow: none; border: 1px solid #e9ecef;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th style="width: 100px;">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTable">
+                        <tr><td colspan="3">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 style="color: #2980b9; margin-bottom: 15px;">Все тесты</h2>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Категория</th>
+                            <th>Время</th>
+                            <th>Вопросов</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminQuizList">
+                        <tr><td colspan="5">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="quizFormView" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1 id="formTitle">Создание нового теста</h1>
+                <button class="btn btn-secondary" id="cancelFormBtn">Отмена</button>
+            </div>
+
+            <div class="admin-form-container">
+                <form id="createQuizForm">
+                    <!-- Скрытое поле для ID теста (нужно для редактирования) -->
+                    <input type="hidden" id="editQuizId" value="">
+                    
+                    <div class="form-section">
+                        <h2>Информация о тесте</h2>
+                        
+                        <div class="form-group">
+                            <label>Название теста</label>
+                            <input type="text" id="quizTitle" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Описание</label>
+                            <textarea id="quizDescription" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Обложка теста (ссылка на картинку)</label>
+                            <input type="text" id="quizImage" placeholder="images/quiz-cover.png">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Категория</label>
+                                <select id="quizCategory" required>
+                                    <option value="">Загрузка категорий...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Время (минуты)</label>
+                                <input type="number" id="quizTimeLimit" required value="30" min="1">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Количество попыток</label>
+                                <input type="number" id="quizAttempts" required value="3" min="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Проходной балл (%)</label>
+                                <input type="number" id="quizPassingScore" required value="70" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Вопросы</h2>
+                        <div id="questionsContainer"></div>
+                        <button type="button" id="addQuestionBtn" class="btn btn-secondary">+ Добавить вопрос</button>
+                    </div>
+
+                    <button type="submit" class="btn btn-full" id="saveQuizBtn">Сохранить тест</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>

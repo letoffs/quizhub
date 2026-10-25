@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub — Результат теста</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo-link" id="logo">
+            <img src="images/logo.png" alt="QuizHub" class="logo-img">
+        </a>
+        <nav class="nav">
+            <a href="index.html">Главная</a>
+            <a href="profile.html">Профиль</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="result-card">
+            <h1 id="resultTitle">Загрузка результата...</h1>
+            
+            <!-- Блок с баллами -->
+            <div class="score-circle" id="scoreCircle">
+                <span id="scoreValue">0</span>%
+            </div>
+
+            <h2 id="statusText" class="status">...</h2>
+
+            <!-- Детали -->
+            <div class="result-details">
+                <div class="detail-item">
+                    <span>Правильных ответов:</span>
+                    <strong id="correctCount">0</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Всего вопросов:</span>
+                    <strong id="totalCount">0</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Время завершения:</span>
+                    <strong id="completedTime">-</strong>
+                </div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="result-actions">
+                <a href="index.html" class="btn btn-secondary">На главную</a>
+                <a href="#" id="retryBtn" class="btn">Пройти еще раз</a>
+            </div>
+
+            <!-- Разбор ответов (отдельно, под кнопками) -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="toggleDetailsBtn" class="btn btn-secondary">Посмотреть разбор ответов</button>
+            </div>
+
+            <div id="detailsContainer" style="display: none; margin-top: 20px; text-align: left;">
+                <h3>Детальный разбор:</h3>
+                <div id="detailsList"></div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/result.js"></script>
+</body>
+</html>

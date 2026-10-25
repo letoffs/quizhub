@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>QuizHub — Прохождение теста</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo-link">
+            <img src="images/logo.png" alt="QuizHub" class="logo-img">
+        </a>
+        <div class="timer" id="timer">--:--</div>
+    </header>
+
+    <main class="container">
+        <div id="quizContainer">
+            <h1 id="quizTitle">Загрузка...</h1>
+            <p id="questionCounter">Вопрос 1 из 1</p>
+            
+            <div class="question-box">
+                <h2 id="questionText">...</h2>
+                <div id="optionsList" class="options-list">
+                    <!-- Сюда будут загружаться варианты ответов -->
+                </div>
+            </div>
+
+            <button id="nextBtn" class="btn">Следующий вопрос</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 QuizHub. Курсовой проект.</p>
+    </footer>
+
+    <script type="module" src="js/quiz.js"></script>
+</body>
+</html>
