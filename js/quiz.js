@@ -73,6 +73,11 @@ function showQuestion() {
     questionCounter.textContent = `Вопрос ${currentQuestionIndex + 1} из ${questions.length}`;
     questionText.textContent = q.questionText;
     optionsList.innerHTML = "";
+    
+    // Элементы для текстового ответа
+    const textAnswerBlock = document.getElementById("textAnswerBlock");
+    const textInput = document.getElementById("textInput");
+    textInput.value = ""; // Очищаем поле при переходе к новому вопросу
 
     // Удаляем старую картинку, если была
     const existingImg = document.getElementById("questionImage");
@@ -91,26 +96,38 @@ function showQuestion() {
         questionText.parentNode.insertBefore(img, optionsList);
     }
 
-    // Выводим варианты ответов
-    if (q.options) {
-        // Получаем массив ключей (option1, option2, option3, option4)
-        let optionKeys = Object.keys(q.options);
+    if (q.typeId === 'type3') {
+        // Скрываем варианты ответов, показываем поле ввода
+        optionsList.style.display = 'none';
+        textAnswerBlock.style.display = 'block';
         
-        // Перемешиваем ключи, чтобы правильный ответ не был всегда первым
-        if (q.shuffleOptions !== false) { // По умолчанию перемешиваем
-             optionKeys = shuffleArray(optionKeys);
-        }
+        // Устанавливаем фокус на поле ввода (удобно для пользователя)
+        textInput.focus();
+    }
+    else {
+        // Показываем варианты, скрываем поле ввода
+        optionsList.style.display = 'flex';
+        textAnswerBlock.style.display = 'none';
 
-        optionKeys.forEach(optionId => {
-            const option = q.options[optionId];
-            const label = document.createElement("label");
-            label.className = "option-label";
-            label.innerHTML = `
-                <input type="radio" name="answer" value="${optionId}" data-correct="${option.isCorrect}">
-                <span>${option.optionText}</span>
-            `;
-            optionsList.appendChild(label);
-        });
+        if (q.options) {
+            let optionKeys = Object.keys(q.options);
+            
+            // Перемешиваем ключи, чтобы правильный ответ не был всегда первым
+            if (q.shuffleOptions !== false) { 
+                 optionKeys = shuffleArray(optionKeys);
+            }
+
+            optionKeys.forEach(optionId => {
+                const option = q.options[optionId];
+                const label = document.createElement("label");
+                label.className = "option-label";
+                label.innerHTML = `
+                    <input type="radio" name="answer" value="${optionId}" data-correct="${option.isCorrect}">
+                    <span>${option.optionText}</span>
+                `;
+                optionsList.appendChild(label);
+            });
+        }
     }
 
     // Меняем кнопку на последнем вопросе
@@ -133,23 +150,35 @@ function shuffleArray(array) {
 
 // Обработка кнопки "Далее" / "Завершить"
 nextBtn.addEventListener("click", () => {
-    const selected = document.querySelector('input[name="answer"]:checked');
-    if (!selected) {
-        alert("Выберите вариант ответа!");
-        return;
+    const q = questions[currentQuestionIndex];
+    let isCorrect = false;
+    let userAnswerValue = "";
+
+    if (q.typeId === 'type3') {
+        const textInput = document.getElementById("textInput");
+        userAnswerValue = textInput.value.trim();
+        if (!userAnswerValue) {
+            alert("Введите ответ!");
+            return;
+        }
+        // Сравниваем без учета регистра
+        const correctAnswer = q.options.option1.optionText.trim();
+        isCorrect = userAnswerValue.toLowerCase() === correctAnswer.toLowerCase();
+    } else {
+        const selected = document.querySelector('input[name="answer"]:checked');
+        if (!selected) {
+            alert("Выберите вариант ответа!");
+            return;
+        }
+        userAnswerValue = selected.value;
+        isCorrect = selected.getAttribute("data-correct") === "true";
     }
 
-    // Проверяем правильность
-    const isCorrect = selected.getAttribute("data-correct") === "true";
     if (isCorrect) score++;
+    const qId = q.id;
+    userAnswers[qId] = userAnswerValue;
 
-    // Сохраняем ответ
-    const qId = questions[currentQuestionIndex].id;
-    userAnswers[qId] = selected.value;
-
-    // Переходим к следующему вопросу
     currentQuestionIndex++;
-    
     if (currentQuestionIndex < questions.length) {
         showQuestion();
     } else {

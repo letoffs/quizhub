@@ -221,17 +221,26 @@ function openForm(quizId = null, quizData = null) {
         if (quizData.questions) {
             Object.keys(quizData.questions).forEach(qId => {
                 const q = quizData.questions[qId];
-                const opt1 = q.options.option1.optionText;
-                const opt2 = q.options.option2.optionText;
-                const opt3 = q.options.option3.optionText;
-                const opt4 = q.options.option4.optionText;
                 
+                const type = q.typeId === "type3" ? "text" : "single";
+                
+                let opt1 = "", opt2 = "", opt3 = "", opt4 = "";
                 let correctIndex = 0;
-                if (q.options.option2.isCorrect) correctIndex = 1;
-                if (q.options.option3.isCorrect) correctIndex = 2;
-                if (q.options.option4.isCorrect) correctIndex = 3;
+
+                if (type === "text") {
+                    opt1 = q.options.option1 ? q.options.option1.optionText : "";
+                } else {
+                    opt1 = q.options.option1 ? q.options.option1.optionText : "";
+                    opt2 = q.options.option2 ? q.options.option2.optionText : "";
+                    opt3 = q.options.option3 ? q.options.option3.optionText : "";
+                    opt4 = q.options.option4 ? q.options.option4.optionText : "";
+
+                    if (q.options.option2 && q.options.option2.isCorrect) correctIndex = 1;
+                    if (q.options.option3 && q.options.option3.isCorrect) correctIndex = 2;
+                    if (q.options.option4 && q.options.option4.isCorrect) correctIndex = 3;
+                }
                 
-                addQuestionBlock(q.questionText, opt1, opt2, opt3, opt4, q.explanation, q.mediaUrl || "", correctIndex);
+                addQuestionBlock(q.questionText, opt1, opt2, opt3, opt4, q.explanation, q.mediaUrl || "", correctIndex, type);
             });
         }
     } else {
@@ -257,7 +266,7 @@ function closeForm() {
     quizListView.style.display = "block";
 }
 
-function addQuestionBlock(text = "", o1 = "", o2 = "", o3 = "", o4 = "", expl = "", img = "", correctIndex = 0) {
+function addQuestionBlock(text = "", o1 = "", o2 = "", o3 = "", o4 = "", expl = "", img = "", correctIndex = 0, type = "single") {
     const blockId = `question_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const block = document.createElement("div");
     block.className = "question-block";
@@ -266,28 +275,84 @@ function addQuestionBlock(text = "", o1 = "", o2 = "", o3 = "", o4 = "", expl = 
     const renderOption = (optId, optValue, isCorrect, labelText) => `
         <div class="option-row">
             <label class="option-radio-label">
-                <input type="radio" name="correct_${blockId}" value="${optId}" ${isCorrect ? 'checked' : ''} required>
+                <input type="radio" name="correct_${blockId}" value="${optId}" ${isCorrect ? 'checked' : ''}>
                 <span>${labelText}</span>
             </label>
-            <input type="text" class="q-opt${optId.replace('option', '')}" required value="${optValue}">
+            <input type="text" class="q-opt${optId.replace('option', '')}" value="${optValue}">
         </div>
     `;
 
+    // Определяем, какой контейнер показывать изначально
+    const displayOptions = type === 'text' ? 'none' : 'block';
+    const displayText = type === 'text' ? 'block' : 'none';
+
     block.innerHTML = `
         <h3>Вопрос <button type="button" class="btn-delete" onclick="document.getElementById('${blockId}').remove()">✖</button></h3>
+        
+        <div class="form-group">
+            <label>Тип вопроса</label>
+            <select class="q-type" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; margin-bottom: 15px;">
+                <option value="single" ${type === 'single' ? 'selected' : ''}>Одиночный выбор</option>
+                <option value="text" ${type === 'text' ? 'selected' : ''}>Текстовый ответ</option>
+            </select>
+        </div>
+
         <div class="form-group"><label>Текст вопроса</label><input type="text" class="q-text" required value="${text}"></div>
+        
         <div class="form-group">
             <label>Ссылка на картинку (опционально)</label>
             <input type="text" class="q-image" placeholder="images/question.png" value="${img}">
         </div>
-        <p style="font-size: 14px; color: #7f8c8d; margin-bottom: 10px;">Отметьте правильный вариант:</p>
-        ${renderOption("option1", o1, correctIndex === 0, "Вариант 1")}
-        ${renderOption("option2", o2, correctIndex === 1, "Вариант 2")}
-        ${renderOption("option3", o3, correctIndex === 2, "Вариант 3")}
-        ${renderOption("option4", o4, correctIndex === 3, "Вариант 4")}
+        
+        <div class="options-container" style="display: ${displayOptions};">
+            <p style="font-size: 14px; color: #7f8c8d; margin-bottom: 10px;">Отметьте правильный вариант:</p>
+            ${renderOption("option1", o1, correctIndex === 0, "Вариант 1")}
+            ${renderOption("option2", o2, correctIndex === 1, "Вариант 2")}
+            ${renderOption("option3", o3, correctIndex === 2, "Вариант 3")}
+            ${renderOption("option4", o4, correctIndex === 3, "Вариант 4")}
+        </div>
+
+        <div class="text-answer-container" style="display: ${displayText};">
+            <div class="form-group" style="background: #e8f4fd; padding: 15px; border-radius: 8px; border: 1px solid #b6d4fe;">
+                <label>Правильный текстовый ответ</label>
+                <input type="text" class="q-correct-text" placeholder="Введите правильный ответ..." value="${type === 'text' ? o1 : ''}">
+                <small style="color: #7f8c8d; display: block; margin-top: 5px;">Проверка происходит без учета регистра.</small>
+            </div>
+        </div>
+
         <div class="form-group" style="margin-top: 20px;"><label>Пояснение</label><input type="text" class="q-explanation" value="${expl}"></div>
     `;
+    
+    // Навешиваем обработчик события на селект
+    const select = block.querySelector('.q-type');
+    select.addEventListener('change', function() {
+        const optionsCont = block.querySelector('.options-container');
+        const textCont = block.querySelector('.text-answer-container');
+        
+        if (this.value === 'text') {
+            optionsCont.style.display = 'none';
+            textCont.style.display = 'block';
+        } else {
+            optionsCont.style.display = 'block';
+            textCont.style.display = 'none';
+        }
+    });
+
     questionsContainer.appendChild(block);
+}
+
+function toggleQuestionType(select) {
+    const block = select.closest('.question-block');
+    const optionsContainer = block.querySelector('.options-container');
+    const textContainer = block.querySelector('.text-answer-container');
+    
+    if (select.value === 'text') {
+        optionsContainer.style.display = 'none';
+        textContainer.style.display = 'block';
+    } else {
+        optionsContainer.style.display = 'block';
+        textContainer.style.display = 'none';
+    }
 }
 
 document.getElementById("addQuestionBtn").addEventListener("click", () => addQuestionBlock());
@@ -357,22 +422,37 @@ createQuizForm.addEventListener("submit", async (e) => {
         }
 
         questionBlocks.forEach((block, index) => {
-            const selectedRadio = block.querySelector(`input[name="correct_${block.id}"]:checked`);
-            const selectedValue = selectedRadio ? selectedRadio.value : "option1";
-
-            quizData.questions[`q${index + 1}`] = {
+            const type = block.querySelector(".q-type").value;
+            
+            let questionData = {
                 questionText: block.querySelector(".q-text").value,
-                typeId: "type1",
+                typeId: type === "text" ? "type3" : "type1",
                 explanation: block.querySelector(".q-explanation").value,
                 hints: "",
                 mediaUrl: block.querySelector(".q-image").value,
-                options: {
+                options: {}
+            };
+
+            if (type === "text") {
+                // Если это текст, берем значение из поля "Правильный текстовый ответ"
+                const correctText = block.querySelector(".q-correct-text").value;
+                questionData.options = {
+                    "option1": { optionText: correctText, isCorrect: true }
+                };
+            } else {
+                // Если это выбор, собираем 4 варианта и проверяем радиокнопку
+                const selectedRadio = block.querySelector(`input[name="correct_${block.id}"]:checked`);
+                const selectedValue = selectedRadio ? selectedRadio.value : "option1";
+                
+                questionData.options = {
                     "option1": { optionText: block.querySelector(".q-opt1").value, isCorrect: selectedValue === "option1" },
                     "option2": { optionText: block.querySelector(".q-opt2").value, isCorrect: selectedValue === "option2" },
                     "option3": { optionText: block.querySelector(".q-opt3").value, isCorrect: selectedValue === "option3" },
                     "option4": { optionText: block.querySelector(".q-opt4").value, isCorrect: selectedValue === "option4" }
-                }
-            };
+                };
+            }
+            
+            quizData.questions[`q${index + 1}`] = questionData;
         });
 
         if (existingQuizId) {

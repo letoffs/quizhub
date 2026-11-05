@@ -94,7 +94,7 @@ function renderDetails(questions, userAnswers) {
     const toggleBtn = document.getElementById("toggleDetailsBtn");
     const detailsContainer = document.getElementById("detailsContainer");
 
-    if (!detailsList) return; // Защита, если элемента нет на странице
+    if (!detailsList) return;
 
     detailsList.innerHTML = "";
 
@@ -102,21 +102,41 @@ function renderDetails(questions, userAnswers) {
 
     Object.keys(questions).forEach(qId => {
         const q = questions[qId];
-        const userAnswerId = userAnswers[qId]; // Какой вариант выбрал пользователь
-        const userAnswerText = userAnswerId && q.options[userAnswerId] ? q.options[userAnswerId].optionText : "Нет ответа";
+        const userAnswerValue = userAnswers[qId];
         
-        // Находим правильный ответ
+        let userAnswerText = "Нет ответа";
         let correctAnswerText = "";
         let isCorrect = false;
-        
-        Object.keys(q.options).forEach(optId => {
-            if (q.options[optId].isCorrect) {
-                correctAnswerText = q.options[optId].optionText;
+
+        // логика для текстового вопроса
+        if (q.typeId === 'type3') {
+            // Для текстового ответа пользователь вводил просто строку
+            userAnswerText = userAnswerValue || "Нет ответа";
+            
+            // Правильный ответ хранится в option1.optionText
+            if (q.options && q.options.option1) {
+                correctAnswerText = q.options.option1.optionText;
+                // Сравниваем без учета регистра и пробелов по краям
+                if (userAnswerValue && userAnswerValue.trim().toLowerCase() === correctAnswerText.trim().toLowerCase()) {
+                    isCorrect = true;
+                }
             }
-            if (optId === userAnswerId && q.options[optId].isCorrect) {
-                isCorrect = true;
+        } 
+        // логика для вопроса с вариантами
+        else {
+            if (userAnswerValue && q.options[userAnswerValue]) {
+                userAnswerText = q.options[userAnswerValue].optionText;
             }
-        });
+            
+            Object.keys(q.options).forEach(optId => {
+                if (q.options[optId].isCorrect) {
+                    correctAnswerText = q.options[optId].optionText;
+                }
+                if (optId === userAnswerValue && q.options[optId].isCorrect) {
+                    isCorrect = true;
+                }
+            });
+        }
 
         // Создаем карточку вопроса
         const div = document.createElement("div");
@@ -124,6 +144,7 @@ function renderDetails(questions, userAnswers) {
         div.style.borderRadius = "8px";
         div.style.border = `1px solid ${isCorrect ? '#2ecc71' : '#e74c3c'}`;
         div.style.background = isCorrect ? '#f0fdf4' : '#fef2f2';
+        div.style.marginBottom = "10px";
 
         div.innerHTML = `
             <p style="font-weight: bold; margin-bottom: 10px;">${q.questionText}</p>
@@ -139,13 +160,17 @@ function renderDetails(questions, userAnswers) {
 
     // Логика открытия/закрытия блока
     if (toggleBtn && detailsContainer) {
-        toggleBtn.addEventListener("click", () => {
+        // Убираем старые обработчики, чтобы не было дублей при повторных вызовах
+        const newToggleBtn = toggleBtn.cloneNode(true);
+        toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+        
+        newToggleBtn.addEventListener("click", () => {
             if (detailsContainer.style.display === "none") {
                 detailsContainer.style.display = "block";
-                toggleBtn.textContent = "Скрыть разбор ответов";
+                newToggleBtn.textContent = "Скрыть разбор ответов";
             } else {
                 detailsContainer.style.display = "none";
-                toggleBtn.textContent = "Посмотреть разбор ответов";
+                newToggleBtn.textContent = "Посмотреть разбор ответов";
             }
         });
     }
